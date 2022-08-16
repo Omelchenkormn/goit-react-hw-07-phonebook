@@ -1,13 +1,24 @@
 import React from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
-import { Button, Label, Input, Forms, Error } from './Form.styled';
-import { useCreateContactMutation } from 'redux/contacts/contactsSlice';
+import {
+  Button,
+  Label,
+  Input,
+  Forms,
+  Error,
+  SvgIconProfile,
+} from './Form.styled';
+import {
+  useFetchContactsQuery,
+  useCreateContactMutation,
+} from 'redux/contacts/contactsApi';
 import Loader from 'components/Loader/Loader';
+import { IoIosContact } from 'react-icons/io';
 
 const initialValues = {
   name: '',
-  number: '',
+  phone: '',
 };
 const validSchema = yup.object().shape({
   name: yup
@@ -16,24 +27,24 @@ const validSchema = yup.object().shape({
     .max(15)
     .typeError('Должно быть строкой')
     .required('Required'),
-  number: yup.string().min(6).max(12).required('Required'),
+  phone: yup.string().min(6).max(12).required('Required'),
 });
 
 const ContactForm = () => {
   const [createContact, { isLoading }] = useCreateContactMutation();
+  const { data = [] } = useFetchContactsQuery();
+  const contacts = data;
 
   const handleSubmit = (initialValues, { resetForm }) => {
-    const { name, number } = initialValues;
-    createContact(name, number);
+    const { name, phone } = initialValues;
 
-    // if (isAdded(name)) {
-    //   return alert(`${name} is already in contacts`);
-    // } else {
-    //   addContact(name, number);
-    // }
-    resetForm();
+    if (contacts.find(contact => contact.name === name)) {
+      return alert(`${name} is already in contacts`);
+    } else {
+      createContact({ name, phone });
+      resetForm();
+    }
   };
-  // const isAdded = name => contacts.map(contact => contact.name).includes(name);
 
   return (
     <Formik
@@ -45,21 +56,21 @@ const ContactForm = () => {
       <Forms autoComplete="off">
         <Label htmlFor="name">
           Name
-          <Input type="text" name="name" />
+          <Input type="text" name="name" placeholder="Type your name" />
           <Error>
             <ErrorMessage name="name" />{' '}
           </Error>
         </Label>
-        <Label htmlFor="number">
-          Number
-          <Input type="tel" name="number" />
+        <Label htmlFor="phone">
+          Phone
+          <Input type="tel" name="phone" placeholder="Type your number" />
           <Error>
-            <ErrorMessage name="number" />
+            <ErrorMessage name="phone" />
           </Error>
         </Label>
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader />}
-          Add contact
+          <SvgIconProfile />
         </Button>
       </Forms>
     </Formik>

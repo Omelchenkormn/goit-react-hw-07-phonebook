@@ -8,10 +8,12 @@ export const Apps = styled.div`
 
 export const Container = styled.div`
   margin: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
   flex-direction: column;
   background-color: #e7f0ff;
   max-width: 405px;
-  border-radius: 10%;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
