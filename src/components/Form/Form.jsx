@@ -14,7 +14,6 @@ import {
   useCreateContactMutation,
 } from 'redux/contacts/contactsApi';
 import Loader from 'components/Loader/Loader';
-import { IoIosContact } from 'react-icons/io';
 
 const initialValues = {
   name: '',
